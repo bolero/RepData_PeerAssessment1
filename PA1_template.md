@@ -106,5 +106,39 @@ steps_median_no_na <- median(activity_data_no_na_daily$steps)
 ```
 The mean for steps taken is 1.0766189\times 10^{4}. The median for steps taken is 1.0766189\times 10^{4}
 
-
 ## Are there differences in activity patterns between weekdays and weekends?
+Adding a new column for day of the week using weekdays()
+
+```r
+activity_data_no_na$date <- as.Date(activity_data_no_na$date)
+activity_data_no_na$dayofweek <- weekdays(activity_data_no_na$date)
+```
+
+Create datasets for weekdays and weekends
+
+```r
+weekdays <- c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')
+weekend <- c('Saturday', 'Sunday')
+activity_data_no_na_weekday <- 
+    activity_data_no_na[activity_data_no_na$dayofweek %in% weekdays,]
+activity_data_no_na_weekend <- 
+    activity_data_no_na[activity_data_no_na$dayofweek %in% weekend,]
+
+activity_data_5min_mean_weekday <- ddply(activity_data_no_na_weekday, "interval", 
+                                 numcolwise(mean, na.rm=TRUE))
+activity_data_5min_mean_weekend <- ddply(activity_data_no_na_weekend, "interval", 
+                                 numcolwise(mean, na.rm=TRUE))
+```
+
+Now plot these datasets on same graph
+
+```r
+par(mfrow=c(2,1))
+plot(activity_data_5min_mean_weekday$interval, activity_data_5min_mean_weekday$steps, type='l',
+     main='Weekday', xlab='Interval', ylab='Mean Steps')
+plot(activity_data_5min_mean_weekend$interval, activity_data_5min_mean_weekend$steps, type='l',
+     main='Weekend', xlab='Interval', ylab='Mean Steps')
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-14-1.png) 
+
