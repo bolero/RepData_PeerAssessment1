@@ -11,10 +11,10 @@ activity_data$date <- as.Date(activity_data$date)
 ```
 
 ## What is mean total number of steps taken per day?
+We can use the ddply and 'sum' on date.
 
 ```r
 library(plyr)
-# We can use the ddply and 'sum' on date
 activity_data_daily <- ddply(activity_data, "date", numcolwise(sum))
 ```
 
@@ -37,8 +37,31 @@ steps_median <- median(activity_data_daily$steps, na.rm=TRUE)
 The mean for steps taken is 1.0766189\times 10^{4}. The median for steps taken is 10765
 
 ## What is the average daily activity pattern?
+We will use the ddply again but instead sum on 'interval'
 
 
+```r
+activity_data_5min_mean <- ddply(activity_data, "interval", 
+                                 numcolwise(mean, na.rm=TRUE))
+```
+
+To visualize the average steps taken in each interval, we can plot it.
+
+
+```r
+plot(activity_data_5min_mean$steps ~ activity_data_5min_mean$interval, type='l',
+     main='Frequency of steps taken in each interval', xlab='Interval', 
+     ylab='Mean steps taken', col='blue')
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
+
+
+```r
+max_value_index <- which.max(activity_data_5min_mean$steps)
+```
+
+The interval with average max steps is 835
 
 ## Imputing missing values
 
